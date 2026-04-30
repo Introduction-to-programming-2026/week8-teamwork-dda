@@ -1,37 +1,40 @@
-# starter.py — Language Poll Analyser
-# Project 1 | Easy | 20–25 minutes
-#
-# Run from this folder:
-#   python starter.py
-#
-# The CSV file is at: ../../week1/favorites.csv
-
 import csv
 
 # ── Step 1: Read the CSV and count languages ──────────────────────────────────
 counts = {}
 
-with open("../../week1/favorites.csv", "r") as file:
-    reader = csv.DictReader(file)
-    for row in reader:
-        # TODO: Get the language from the row
-        language = ???
+try:
+    # Make sure the path matches your folder structure
+   with open("part1/favorites.csv", "r") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            # Clean the data: remove whitespace and capitalize (e.g., "python" -> "Python")
+            language = row["language"].strip().capitalize()
 
-        # TODO: Update counts — increment if exists, create if new
-        ???
+            # Update counts — increment if exists, create if new
+            if language in counts:
+                counts[language] += 1
+            else:
+                counts[language] = 1
+except FileNotFoundError:
+    print("Error: The file 'favorites.csv' was not found.")
+    exit()
 
 # ── Step 2: Sort by popularity (most popular first) ───────────────────────────
-# Hint: sorted(counts, key=counts.get, reverse=True)
-sorted_languages = ???
+sorted_languages = sorted(counts, key=counts.get, reverse=True)
+total_responses = sum(counts.values())
 
 # ── Step 3: Print the report ──────────────────────────────────────────────────
 print("=== Language Popularity Report ===")
 
-# TODO: Loop over sorted_languages with enumerate() to get rank numbers (start=1)
-# Format each line like: "1. Python  : 196 students"
-for rank, language in ???:
-    ???
+# Using enumerate to get rank numbers (starting from 1)
+for rank, language in enumerate(sorted_languages, start=1):
+    count = counts[language]
+    # Calculate percentage for a more professional look
+    percentage = (count / total_responses) * 100
+    
+    # Formatting: language name aligned (10 chars), count, and percentage
+    print(f"{rank}. {language:10} : {count:3} students ({percentage:.1f}%)")
 
-# TODO: Print the total number of responses
-# Hint: sum(counts.values())
-print(f"\nTotal responses: ???")
+# Print the total number of responses
+print(f"\nTotal responses: {total_responses}")
