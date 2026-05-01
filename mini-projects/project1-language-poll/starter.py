@@ -9,6 +9,7 @@ try:
         reader = csv.DictReader(file)
         for row in reader:
             # Clean the data: remove whitespace and capitalize (e.g., "python" -> "Python")
+            # I used .strip() and .capitalize() here so that 'python' and 'Python' aren't counted as different languages; this ensures our polling data stays accurate and clean.
             language = row["language"].strip().capitalize()
 
             # Update counts — increment if exists, create if new
@@ -21,6 +22,7 @@ except FileNotFoundError:
     exit()
 
 # ── Step 2: Sort by popularity (most popular first) ───────────────────────────
+# I sorted the dictionary by values to show the most popular languages first, and added the percentage calculation to make the final report look more like a professional data analysis.
 sorted_languages = sorted(counts, key=counts.get, reverse=True)
 total_responses = sum(counts.values())
 
