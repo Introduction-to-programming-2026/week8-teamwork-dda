@@ -14,12 +14,14 @@ with open("grades.csv", "r") as file:
     reader = csv.DictReader(file)
     for row in reader:
         name  = row["name"]
+        # I converted the score from a string to an integer here because CSV data is read as text by default; this is necessary for the upcoming math calculations.
         score = int(row["score"])   # IMPORTANT: CSV values are strings — must convert
 
         # Append score to the scores list
         scores.append(score)
 
         # Update highest if this score is greater than highest["score"]
+        # By using a dictionary for 'highest' and 'lowest', I can track both the numeric score and the student's name simultaneously as the loop iterates through the data.
         if score > highest["score"]:
             highest["score"] = score
             highest["name"] = name
@@ -46,6 +48,7 @@ with open("grades.csv", "r") as file:
 
 # ── Step 3: Calculate the average ────────────────────────────────────────────
 # Calculate and round to 1 decimal place
+# I used the sum() and len() functions to calculate the average and rounded it to one decimal place to keep the final output clean and readable.
 average = round(sum(scores) / len(scores), 1) if scores else 0
 
 # ── Step 4: Print the report ──────────────────────────────────────────────────
