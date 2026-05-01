@@ -18,6 +18,7 @@ with open("bookings.csv", "r") as file:
         attendees = int(row["attendees"])
 
         # 1. Update room counts
+        # I used the .get() method here to handle new keys safely; it prevents errors by providing a default value of 0 if the room or event type doesn't exist in the dictionary yet.
         room_counts[room] = room_counts.get(room, 0) + 1
 
         # 2. Update event type counts
@@ -36,9 +37,11 @@ busiest_count = day_attendees[busiest_day]
 
 # ── Step 4: Filter large events (> 50 attendees) and sort ─────────────────────
 # Using list comprehension to filter
+# I implemented a list comprehension here to efficiently filter events with more than 50 attendees; it's a more Pythonic and concise way to create the filtered list in one line.
 large_events = [row for row in all_events if int(row["attendees"]) > 50]
 
 # Sort large_events by attendees descending (highest first)
+# Using a lambda function as the sorting key allowed me to sort the data based on a specific column (attendees) in descending order, even though the data is stored in a complex list of dictionaries.
 large_events_sorted = sorted(large_events, key=lambda row: int(row["attendees"]), reverse=True)
 
 # ── Step 5: Print the report ──────────────────────────────────────────────────
