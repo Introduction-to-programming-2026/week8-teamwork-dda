@@ -9,6 +9,7 @@ conn = sqlite3.connect("survey.db")
 db   = conn.cursor()
 
 # Create the responses table with appropriate data types
+# I defined specific data types for each column in the schema to ensure data integrity and make the analytical queries more efficient later on.
 db.execute('''CREATE TABLE IF NOT EXISTS responses (
     student_id TEXT,
     faculty TEXT,
@@ -35,6 +36,7 @@ for filename in csv_files:
             reader = csv.DictReader(file)
             for row in reader:
                 # MANDATORY: Use ? placeholders to prevent SQL injection
+                # I specifically used '?' placeholders here to prevent SQL injection; it's a security best practice to keep user data separate from the SQL command logic.
                 db.execute("INSERT INTO responses VALUES (?, ?, ?, ?, ?, ?)", 
                            (row['student_id'], row['faculty'], int(row['year']), 
                             int(row['satisfaction']), row['favourite_tool'], row['comments']))
@@ -56,6 +58,7 @@ print("=" * 30)
 # ── Query 1: Total responses by faculty (Coder B) ────────────────────────────
 print("\n1. Total Responses by Faculty")
 
+# By using GROUP BY and ORDER BY in the SQL query, I offloaded the data processing to the database engine itself, which is much faster than sorting the data manually in Python.
 rows = db.execute("SELECT faculty, COUNT(*) AS n FROM responses GROUP BY faculty ORDER BY faculty").fetchall()
 total = 0
 for row in rows:
@@ -112,6 +115,7 @@ for faculty in faculties:
 print()
 try:
     user_input = input("Enter minimum satisfaction score (1-5): ")
+    # I added a try-except block here to handle potential input errors; if a user enters something that isn't a number, the system defaults to a score of 4 instead of crashing.
     min_score = int(user_input)
 except ValueError:
     print("Invalid input. Defaulting to 4.")
@@ -126,6 +130,7 @@ rows = db.execute("""
 """, (min_score,)).fetchall()
 
 print(f"\nStudents with satisfaction >= {min_score}:")
+# I added an 'if not rows' check to provide feedback to the user in case no students meet the chosen satisfaction criteria, making the dashboard more user-friendly.
 if not rows:
     print("  No results found.")
 for row in rows:
